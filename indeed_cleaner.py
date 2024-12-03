@@ -6,11 +6,12 @@ import re
 import  math
 
 df = pd.read_csv('indeed_jobs.csv')
-df = df.drop(df.columns[0], axis=1)
+# df = df.drop(df.columns[0], axis=1)
 
 for index in df.index:
     salary = df["salary"][index]
     if isinstance(salary, str):
+        print(salary, end="  ")
         salary = salary.replace(",","")
         if "-" in salary:
             salary_range = salary.split("-")
@@ -26,5 +27,6 @@ for index in df.index:
         else:
             yearly_salary = None
         df.at[index, 'salary'] = yearly_salary
+        print(yearly_salary)
 
 df.to_csv('indeed_jobs_cleaned.csv')
