@@ -30,7 +30,6 @@ driver.get("https://www.glassdoor.com/Job/boston-software-engineer-jobs-SRCH_IL.
 job_data = []
 
 def close_signup_modal():
-    """Try to close the signup modal if it appears"""
     try:
         close_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "span[alt='Close']"))
@@ -49,12 +48,12 @@ scroll_position = 0
 
 for page_num in range(1, 31):  
     try:
-        # Scroll to load more content
+        # scroll page
         scroll_position += random.randint(200, 400)
         driver.execute_script(f"window.scrollTo(0, {scroll_position});")
         time.sleep(scroll_pause_time + random.uniform(0, 2))
         
-        # Find all job listings on current page
+        # find all jobs on page
         jobs = driver.find_elements(By.CSS_SELECTOR, "div.JobCard_jobCardContainer__arQlW")
         print(f"Found {len(jobs)} jobs on page {page_num}")
         
@@ -111,7 +110,7 @@ for page_num in range(1, 31):
                 print(f"Error extracting job data: {e}")
                 continue
         
-        # Try to click "Show more jobs" button
+        # load more jobs
         try:
             next_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, "//span[@class='button_ButtonContent__a4TUW']//span[text()='Show more jobs']"))
