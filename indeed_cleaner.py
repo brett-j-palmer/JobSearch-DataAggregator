@@ -29,4 +29,6 @@ for index in df.index:
         df.at[index, 'salary'] = yearly_salary
         print(yearly_salary)
 
-df.to_csv('indeed_jobs_cleaned.csv')
+df2 = df.drop_duplicates()
+
+df2.to_csv('indeed_jobs_cleaned.csv')

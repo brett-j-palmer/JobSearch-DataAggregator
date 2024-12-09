@@ -40,13 +40,15 @@ base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&st
 data = []
 start = 0  # Initial start value
 
-for i in range(50):
+i=0
+while True:
+    i+=1
     #Open the next page
     url = base_url + str(start)
     driver.get(url)
 
     #Wait a random amount of time to bypass captchas
-    time.sleep(random.uniform(2, 4))
+    time.sleep(random.uniform(1, 2))
 
     # Wait for the page to load
     try:
