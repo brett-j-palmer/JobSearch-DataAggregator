@@ -11,6 +11,22 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import pandas as pd
 import random
+import json
+
+# Get path to driver from configuration file
+with open("config.json", "r") as f:
+    config = json.load(f)
+data_path = config["data_path"]
+
+# Get job, location, and radius from the user
+job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+job = "+".join(job.split())
+location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
+location = "%2C+".join(location.replace(",", "").split())
+radius = input("How many miles from your location would you work? \m e.g.: '5'  ")
+
+# Construct a url for the user's Indeed search
+base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
 
 # Use mobile user agents to avoid getting blocked by CloudFare
 user_agents = [
@@ -26,16 +42,16 @@ def setup_driver():
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--incognito")
     # Return a driver instance
-    return webdriver.Chrome(service=Service(executable_path="/Users/BrettPalmer/Desktop/COS482/ChromeDriver2/chromedriver"), options=options)
+    return webdriver.Chrome(service=Service(data_path), options=options)
 
 # Create driver instance
 driver = setup_driver()
 # driver.set_window_size(650, 1000)
 
-job = "software+engineer"
-location = "Boston%2C+MA"
-radius = "5"
-base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
+# job = "software+engineer"
+# location = "Boston%2C+MA"
+# radius = "5"
+# base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
 
 data = []
 start = 0  # Initial start value
