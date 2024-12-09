@@ -12,18 +12,36 @@ import time
 import pandas as pd
 import random
 import json
+import sys
 
 # Get path to driver from configuration file
 with open("config.json", "r") as f:
     config = json.load(f)
 data_path = config["data_path"]
 
-# Get job, location, and radius from the user
-job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+# # Get job, location, and radius from the user
+# job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+# job = "+".join(job.split())
+# location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
+# location = "%2C+".join(location.replace(",", "").split())
+# radius = input("How many miles from your location would you work? \m e.g.: '5'  ")
+
+if len(sys.argv)>1:
+    job = sys.argv[1]
+else:
+    job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
 job = "+".join(job.split())
-location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
-location = "%2C+".join(location.replace(",", "").split())
-radius = input("How many miles from your location would you work? \m e.g.: '5'  ")
+
+if len(sys.argv)>2:
+    location = sys.argv[2]
+else:
+    location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
+location = "%2C".join(location.replace(" ","").split(","))
+
+if len(sys.argv)>3:
+    radius = sys.argv[3]
+else:
+    radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
 
 # Construct a url for the user's Indeed search
 base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
