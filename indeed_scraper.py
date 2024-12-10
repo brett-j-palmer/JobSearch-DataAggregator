@@ -52,7 +52,7 @@ while True:
     driver.get(url)
 
     #Wait a random amount of time to bypass captchas
-    time.sleep(random.uniform(2, 3))
+    time.sleep(random.uniform(2, 4))
 
     # Wait for the page to load
     try:

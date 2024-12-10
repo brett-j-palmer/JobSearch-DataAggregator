@@ -1,22 +1,26 @@
 import os
 import pandas as pd
 
-# Get job, location, and radius from the user
-job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
-location = input("Where are you looking to work? \n e.g.: 'Boston,MA'  ")
-radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
+# # Get job, location, and radius from the user
+# job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+# location = input("Where are you looking to work? \n e.g.: 'Boston,MA'  ")
+# radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
 
-# Scrape jobs from Indeed
-os.system(f'python indeed_scraper.py "{job}" "{location}" "{radius}"')
+# # Scrape jobs from Indeed
+# print("\nGathering your jobs from Indeed...")
+# os.system(f'python indeed_scraper.py "{job}" "{location}" "{radius}"')
 
-# Clean the Indeed jobs
-os.system(f'python indeed_cleaner.py')
+# # Clean the Indeed jobs
+# os.system(f'python indeed_cleaner.py')
 
-os.system(f'python glassdoor_scraper.py "{job}" "{location}" "{radius}"')
+# # Scrape jobs from Glassdoor
+# print("\nGathering your jobs from Glassdoor...")
+# os.system(f'python glassdoor_scraper.py "{job}" "{location}" "{radius}"')
 
-os.system(f'python glassdoor_cleaner.py')
+# # Clean jobs from Glassdoor
+# os.system(f'python glassdoor_cleaner.py')
 
-# Combine the platforms into one
+# Combine the platform results into one CSV
 indeed_df = pd.read_csv('indeed_jobs_cleaned.csv')
 indeed_df['platform'] = "I"
 indeed_average = indeed_df['salary'].mean()
@@ -31,7 +35,7 @@ combined_df = combined_df.drop_duplicates(subset=['title', 'company', 'salary', 
 combined_df.to_csv('all_jobs.csv', index=False)
 
 # Return the best jobs in a separate CSV
-job_count = input("How many jobs would you like to see? ")
+job_count = int(input("How many jobs would you like to see? "))
 top_jobs_df = combined_df.head(job_count)
 top_jobs_df.to_csv('top_jobs.csv', index=False)
 
