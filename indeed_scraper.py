@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
+from undetected_chromedriver import Chrome
 import time
 import pandas as pd
 import random
@@ -19,13 +20,7 @@ with open("config.json", "r") as f:
     config = json.load(f)
 data_path = config["data_path"]
 
-# # Get job, location, and radius from the user
-# job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
-# job = "+".join(job.split())
-# location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
-# location = "%2C+".join(location.replace(",", "").split())
-# radius = input("How many miles from your location would you work? \m e.g.: '5'  ")
-
+# Get job, location, and radius from the parameters, or user if not
 if len(sys.argv)>1:
     job = sys.argv[1]
 else:
@@ -46,30 +41,8 @@ else:
 # Construct a url for the user's Indeed search
 base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
 
-# Use mobile user agents to avoid getting blocked by CloudFare
-user_agents = [
-    "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36",
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
-]
-
-# Selenium Setup
-def setup_driver():
-    user_agent = random.choice(user_agents) # Randomize User-Agent
-    options = webdriver.ChromeOptions()
-    options.add_argument(f"user-agent={user_agent}")
-    options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--incognito")
-    # Return a driver instance
-    return webdriver.Chrome(service=Service(data_path), options=options)
-
 # Create driver instance
-driver = setup_driver()
-# driver.set_window_size(650, 1000)
-
-# job = "software+engineer"
-# location = "Boston%2C+MA"
-# radius = "5"
-# base_url = f"https://www.indeed.com/jobs?q={job}&l={location}&radius={radius}&start="
+driver = Chrome(service=Service(data_path))
 
 data = []
 start = 0  # Initial start value
@@ -104,12 +77,12 @@ while True:
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'lxml') 
     
-    # time.sleep(1800) 
     for job in soup.select("div.job_seen_beacon"):
         title_selector = "h2"  
         company_selector = "span[data-testid='company-name']"
         location_selector = "div[data-testid='text-location']"
-        salary_selector = "div.css-1a6kja7"
+        # salary_selector = "div.css-1a6kja7"
+        salary_selector = "div.salary-snippet-container"
         link_selector = "a"
 
         link = job.select_one(link_selector)['href']
@@ -117,24 +90,24 @@ while True:
         job_data = [
             job.select_one(title_selector).text,
             job.select_one(company_selector).text, 
-            job.select_one(location_selector).text,
             job.select_one(salary_selector).text if job.select_one(salary_selector) else None,
+            job.select_one(location_selector).text,
             "https://www.indeed.com" + link 
         ]
 
-        # print(job_data)
         data.append(job_data)
     
     # Increment start parameter for the next page
     start += 10
 
     # Check if is another page to visit, break if not
-    if not soup.select_one('a[data-dd-action-name="next-page"]'):
+    # if not soup.select_one('a[data-dd-action-name="next-page"]'):
+    if not soup.select_one('a[data-testid="pagination-page-next"]'):
         print("All jobs have been scraped.")
         break
 
 # Convert 2D list of article information into a dataframe
-df = pd.DataFrame(data, columns=['title', 'company', 'location', 'salary', 'link'])
+df = pd.DataFrame(data, columns=['title', 'company', 'salary', 'location', 'link'])
 
 # Save the article information to a CSV file
 df.to_csv('indeed_jobs.csv', index=False)

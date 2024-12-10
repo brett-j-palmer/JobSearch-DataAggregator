@@ -12,22 +12,32 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+from undetected_chromedriver import Chrome
+from selenium.webdriver.common.keys import Keys
+import sys
 
-service = Service(executable_path=r"C:\Users\12075\Desktop\482\chromedriver-win64\chromedriver.exe")
-options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')
-options.add_argument('--incognito')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_experimental_option('excludeSwitches', ['enable-logging', "enable-automation"])
-options.add_experimental_option('useAutomationExtension', False)
+def fetch_search_url(keyword, location, radius):
+    driver = Chrome()
+    try:
+        driver.get("https://www.glassdoor.com/Job/index.htm")
+        time.sleep(2)
 
-driver = webdriver.Chrome(service=service, options=options)
+        job_title_input = driver.find_element(By.ID,"searchBar-jobTitle")
+        location_input = driver.find_element(By.ID, "searchBar-location")
+        job_title_input.send_keys(keyword)
+        location_input.send_keys(location)
+        location_input.send_keys(Keys.RETURN)
 
-driver.get("https://www.glassdoor.com/Job/boston-software-engineer-jobs-SRCH_IL.0,6_IC1154532_KO7,24.htm")
+        time.sleep(2)
+        current_url = driver.current_url + "?radius=" + radius
+        print("Search URL:", current_url)
+        return current_url
 
-job_data = []
+    except Exception as e:
+        print("Error fetching search URL:" , e)
+        return None
+    finally:
+        driver.quit() 
 
 def close_signup_modal():
     try:
@@ -37,6 +47,35 @@ def close_signup_modal():
         close_button.click()
     except:
         pass
+
+if len(sys.argv)>1:
+    job = sys.argv[1]
+else:
+    job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+job = job.strip()
+
+if len(sys.argv)>2:
+    location = sys.argv[2]
+else:
+    location = input("Where are you looking to work? \n e.g.: 'Boston, MA'  ")
+location = location.strip()
+
+if len(sys.argv)>3:
+    radius = sys.argv[3]
+else:
+    radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
+radius = radius.strip()
+
+search_url = fetch_search_url(job, location, radius)
+if not search_url:
+    print("Failed to fetch search URL. Exiting.")
+    exit()
+
+# driver = webdriver.Chrome(service=service, options=options)
+driver = Chrome()
+driver.get(search_url)
+
+job_data = []
 
 WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.CSS_SELECTOR, "div.JobCard_jobCardContainer__arQlW"))
@@ -75,7 +114,7 @@ for page_num in range(1, 31):
                 try:
                     salary = job.find_element(By.CSS_SELECTOR, "div.JobCard_salaryEstimate__QpbTW").text
                 except NoSuchElementException:
-                    salary = "Not available"
+                    salary = None
                 
                 # Get location
                 try:
