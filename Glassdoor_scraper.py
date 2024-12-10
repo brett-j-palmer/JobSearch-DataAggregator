@@ -14,10 +14,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from undetected_chromedriver import Chrome
 from selenium.webdriver.common.keys import Keys
+import json
 import sys
 
 def fetch_search_url(keyword, location, radius):
-    driver = Chrome()
+    driver = Chrome(service=Service(data_path))
     try:
         driver.get("https://www.glassdoor.com/Job/index.htm")
         time.sleep(2)
@@ -41,12 +42,16 @@ def fetch_search_url(keyword, location, radius):
 
 def close_signup_modal():
     try:
-        close_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "span[alt='Close']"))
+        close_button = WebDriverWait(driver, 3).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.CloseButton"))
         )
         close_button.click()
     except:
         pass
+
+with open("config.json", "r") as f:
+    config = json.load(f)
+data_path = config["data_path"]
 
 if len(sys.argv)>1:
     job = sys.argv[1]
@@ -72,7 +77,7 @@ if not search_url:
     exit()
 
 # driver = webdriver.Chrome(service=service, options=options)
-driver = Chrome()
+driver = Chrome(service=Service(data_path))
 driver.get(search_url)
 
 job_data = []
@@ -82,72 +87,13 @@ WebDriverWait(driver, 10).until(
 )
 close_signup_modal()
 
-scroll_pause_time = 3
 scroll_position = 0
-
-for page_num in range(1, 31):  
+for page_num in range(1, 40):  
     try:
-        # scroll page
+        # scroll page and pause to bypass blockers
         scroll_position += random.randint(200, 400)
         driver.execute_script(f"window.scrollTo(0, {scroll_position});")
-        time.sleep(scroll_pause_time + random.uniform(0, 2))
-        
-        # find all jobs on page
-        jobs = driver.find_elements(By.CSS_SELECTOR, "div.JobCard_jobCardContainer__arQlW")
-        print(f"Found {len(jobs)} jobs on page {page_num}")
-        
-        for job in jobs:
-            try:
-                # Get job title
-                try:
-                    title = job.find_element(By.CSS_SELECTOR, "a.JobCard_jobTitle__GLyJ1").text
-                except NoSuchElementException:
-                    title = "N/A"
-                
-                # Get company name
-                try:
-                    company = job.find_element(By.CSS_SELECTOR, "span.EmployerProfile_compactEmployerName__9MGcV").text
-                except NoSuchElementException:
-                    company = "N/A"
-                
-                # Get salary information
-                try:
-                    salary = job.find_element(By.CSS_SELECTOR, "div.JobCard_salaryEstimate__QpbTW").text
-                except NoSuchElementException:
-                    salary = None
-                
-                # Get location
-                try:
-                    location = job.find_element(By.CSS_SELECTOR, "div.JobCard_location__Ds1fM").text
-                except NoSuchElementException:
-                    location = "N/A"
-                
-                # Get job link
-                try:
-                    link = job.find_element(By.CSS_SELECTOR, "a.JobCard_jobTitle__GLyJ1").get_attribute('href')
-                except NoSuchElementException:
-                    link = "N/A"
-
-                job_info = {
-                    "title": title,
-                    "company": company,
-                    "salary": salary,
-                    "location": location,
-                    "link": link
-                }
-                
-                job_data.append(job_info)
-        
-                print('Job title:', title)
-                print('Company:', company)
-                print('Salary:', salary)
-                print('Location:', location)
-                print('Link:', link)
-                print('\n')
-                
-            except Exception as e:
-                print(f"Error extracting job data: {e}")
-                continue
+        time.sleep(random.uniform(0,2))
         
         # load more jobs
         try:
@@ -158,7 +104,7 @@ for page_num in range(1, 31):
             
             print(f"Moving to page {page_num + 1}")
             
-            time.sleep(random.uniform(3, 10))
+            # time.sleep(random.uniform(1, 3))
             
             close_signup_modal()
             
@@ -169,6 +115,64 @@ for page_num in range(1, 31):
     except Exception as e:
         print(f"Error on page {page_num}: {e}")
         break
+
+# find all jobs on page
+jobs = driver.find_elements(By.CSS_SELECTOR, "div.JobCard_jobCardContainer__arQlW")
+print(f"Found {len(jobs)} jobs on page {page_num}")
+
+for job in jobs:
+    try:
+        # Get job title
+        try:
+            title = job.find_element(By.CSS_SELECTOR, "a.JobCard_jobTitle__GLyJ1").text
+        except NoSuchElementException:
+            title = None
+        
+        # Get company name
+        try:
+            company = job.find_element(By.CSS_SELECTOR, "span.EmployerProfile_compactEmployerName__9MGcV").text
+        except NoSuchElementException:
+            company = None
+        
+        # Get salary information
+        try:
+            salary = job.find_element(By.CSS_SELECTOR, "div.JobCard_salaryEstimate__QpbTW").text
+        except NoSuchElementException:
+            salary = None
+        
+        # Get location
+        try:
+            location = job.find_element(By.CSS_SELECTOR, "div.JobCard_location__Ds1fM").text
+        except NoSuchElementException:
+            location = None
+        
+        # Get job link
+        try:
+            link = job.find_element(By.CSS_SELECTOR, "a.JobCard_jobTitle__GLyJ1").get_attribute('href')
+        except NoSuchElementException:
+            link = None
+
+        job_info = {
+            "title": title,
+            "company": company,
+            "salary": salary,
+            "location": location,
+            "link": link
+        }
+        
+        job_data.append(job_info)
+
+        print('Job title:', title)
+        print('Company:', company)
+        print('Salary:', salary)
+        print('Location:', location)
+        print('Link:', link)
+        print('\n')
+        
+    except Exception as e:
+        print(f"Error extracting job data: {e}")
+        continue
+
 
 df = pd.DataFrame(job_data)
 df.to_csv("glassdoor_jobs.csv", index=False)

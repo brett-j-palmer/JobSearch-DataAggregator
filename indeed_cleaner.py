@@ -4,6 +4,7 @@
 import pandas as pd
 
 df = pd.read_csv('indeed_jobs.csv')
+df = df.drop_duplicates()
 # df = df.drop(df.columns[0], axis=1)
 
 for index in df.index:
@@ -28,6 +29,4 @@ for index in df.index:
         df.at[index, 'salary'] = yearly_salary
         # print(yearly_salary)
 
-df2 = df.drop_duplicates()
-
-df2.to_csv('indeed_jobs_cleaned.csv', index=False)
+df.to_csv('indeed_jobs_cleaned.csv', index=False)
