@@ -1,11 +1,11 @@
-title,company,salary,location,link,platform
-Staff Software Engineer,HubSpot,273500.0,"Cambridge, MA","https://www.glassdoor.com/job-listing/staff-software-engineer-hubspot-JV_IC1154545_KO0,23_KE24,31.htm?jl=1009537195421",G
-"Senior Director, Web Experience",Klaviyo,260000.0,"Boston, MA","https://www.glassdoor.com/job-listing/senior-director-web-experience-klaviyo-JV_IC1154532_KO0,30_KE31,38.htm?jl=1009420465011",G
-Senior/Staff Software Engineer - Machine Learning,Zoox,257500.0,"Boston, MA","https://www.glassdoor.com/job-listing/senior-staff-software-engineer-machine-learning-zoox-JV_IC1154532_KO0,47_KE48,52.htm?jl=1009338918213",G
-Senior/Staff Software Engineer - Prediction Machine Learning Engineer,Zoox,256500.0,"Boston, MA","https://www.glassdoor.com/job-listing/senior-staff-software-engineer-prediction-machine-learning-engineer-zoox-JV_IC1154532_KO0,67_KE68,72.htm?jl=1009338918441",G
-Software Engineer (Technical Leadership) - Machine Learning,Meta,253000.0,"Boston, MA 02142 (East Cambridge area)",https://www.indeed.com/rc/clk?jk=1ddd854381be6c03&bb=TsNY_6flhXsy9v18oqJl5FkFAe93kXD4lCVr18bfYNzPdqP8NlWUElxETzsqT3Ufei1zKcIAmU0583o6QcjEGoxgqmBirNJhCkLRQOiOF6xtGqvBnS6zXw%3D%3D&xkcb=SoDN67M34XPuYuWTVZ0HbzkdCdPP&fccid=ba07516c418dda52&vjs=3,G
-Software Engineer (Technical Leadership) - Machine Learning,Meta,253000.0,"Boston, MA","https://www.glassdoor.com/job-listing/software-engineer-technical-leadership-machine-learning-meta-JV_IC1154532_KO0,55_KE56,60.htm?jl=1009082250145",G
-"Staff Software Engineer - Real Time Systems, Mission Autonomy",Anduril Industries,245000.0,"Boston, MA","https://www.glassdoor.com/job-listing/staff-software-engineer-real-time-systems-mission-autonomy-anduril-industries-JV_IC1154532_KO0,58_KE59,77.htm?jl=1009551656832",G
-Staff Software Engineer - Platform,Anduril Industries,245000.0,"Boston, MA","https://www.glassdoor.com/job-listing/staff-software-engineer-platform-anduril-industries-JV_IC1154532_KO0,32_KE33,51.htm?jl=1009551656810",G
-Backend Senior Software Engineer- Technical Lead II- AI,HubSpot,244500.0,"Remote in Cambridge, MA",https://www.indeed.com/rc/clk?jk=65ea1e71832e5d5b&bb=yWSWf8GAedV_5LURM3JIKlmlJ-zi1nyXnw7iZuFW91ShVRavYQeLwPSOo1BrZB3zyu3r8IC2v5pE2oJ7MyHPq3WuU3HFHD2tTaqv3qntEkHBpHyUhiU0gSIwfOIBq_Zs&xkcb=SoBm67M34XPQjpSTwx0HbzkdCdPP&fccid=21bb811abc2058c6&vjs=3,G
-Senior/Staff Perception Machine Learning Engineer - 3D Tracking,Zoox,241500.0,"Boston, MA","https://www.glassdoor.com/job-listing/senior-staff-perception-machine-learning-engineer-3d-tracking-zoox-JV_IC1154532_KO0,61_KE62,66.htm?jl=1009338917701",G
+title,company,salary,location,platform
+Staff Software Engineer,HubSpot,273500.0,"Cambridge, MA",G
+"Senior Director, Web Experience",Klaviyo,260000.0,"Boston, MA",G
+Senior/Staff Software Engineer - Machine Learning,Zoox,257500.0,"Boston, MA",G
+Senior/Staff Software Engineer - Prediction Machine Learning Engineer,Zoox,256500.0,"Boston, MA",G
+Software Engineer (Technical Leadership) - Machine Learning,Meta,253000.0,"Boston, MA 02142 (East Cambridge area)",I
+Software Engineer (Technical Leadership) - Machine Learning,Meta,253000.0,"Boston, MA",G
+"Staff Software Engineer - Real Time Systems, Mission Autonomy",Anduril Industries,245000.0,"Boston, MA",G
+Staff Software Engineer - Platform,Anduril Industries,245000.0,"Boston, MA",G
+Backend Senior Software Engineer- Technical Lead II- AI,HubSpot,244500.0,"Remote in Cambridge, MA",I
+Senior/Staff Perception Machine Learning Engineer - 3D Tracking,Zoox,241500.0,"Boston, MA",G
