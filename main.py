@@ -1,24 +1,24 @@
 import os
 import pandas as pd
 
-# # Get job, location, and radius from the user
-# job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
-# location = input("Where are you looking to work? \n e.g.: 'Boston,MA'  ")
-# radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
+# Get job, location, and radius from the user
+job = input("What job are you looking for? \n e.g.: 'Software Engineer'  ")
+location = input("Where are you looking to work? \n e.g.: 'Boston,MA'  ")
+radius = input("How many miles from your location would you work? \n e.g.: '5'  ")
 
-# # Scrape jobs from Indeed
-# print("\nGathering your jobs from Indeed...")
-# os.system(f'python indeed_scraper.py "{job}" "{location}" "{radius}"')
+# Scrape jobs from Indeed
+print("\nGathering your jobs from Indeed...")
+os.system(f'python indeed_scraper.py "{job}" "{location}" "{radius}"')
 
-# # Clean the Indeed jobs
-# os.system(f'python indeed_cleaner.py')
+# Clean the Indeed jobs
+os.system(f'python indeed_cleaner.py')
 
-# # Scrape jobs from Glassdoor
-# print("\nGathering your jobs from Glassdoor...")
-# os.system(f'python glassdoor_scraper.py "{job}" "{location}" "{radius}"')
+# Scrape jobs from Glassdoor
+print("\nGathering your jobs from Glassdoor...")
+os.system(f'python glassdoor_scraper.py "{job}" "{location}" "{radius}"')
 
-# # Clean jobs from Glassdoor
-# os.system(f'python glassdoor_cleaner.py')
+# Clean jobs from Glassdoor
+os.system(f'python glassdoor_cleaner.py')
 
 # Combine the platform results into one CSV
 indeed_df = pd.read_csv('indeed_jobs_cleaned.csv')
@@ -31,12 +31,18 @@ glassdoor_average = glassdoor_df['salary'].mean()
 
 combined_df = pd.concat([indeed_df, glassdoor_df], ignore_index=True)
 combined_df = combined_df.sort_values(by='salary', ascending=False)
-combined_df = combined_df.drop_duplicates(subset=['title', 'company', 'salary', 'location'])
 combined_df.to_csv('all_jobs.csv', index=False)
+
+# Compare qualities of Glassdoor and Indeed
+os.system(f'python platform_comparison.py')
 
 # Return the best jobs in a separate CSV
 job_count = int(input("How many jobs would you like to see? "))
 top_jobs_df = combined_df.head(job_count)
 top_jobs_df.to_csv('top_jobs.csv', index=False)
+
+# Once analytics are done, remove identical jobs that are on both Glassdoor and Indeed
+combined_df = combined_df.drop_duplicates(subset=['title', 'company', 'salary', 'location'])
+combined_df.to_csv('all_jobs.csv', index=False)
 
 print(f"\nWe have now created the file top_jobs.csv in your directory \nIt contains information and application links from the top {job_count} paying jobs we found.")
