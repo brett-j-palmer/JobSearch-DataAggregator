@@ -2,7 +2,7 @@
 
 # How to Run
 - Paste the path to your chromedriver in the config.json
-- Run main.y
+- Run main.py
 - Enter your preferred job, location, and mile radius from that location
 - Enter how many top jobs you would like to view
 
